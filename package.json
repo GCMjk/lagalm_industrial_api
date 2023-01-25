@@ -1,0 +1,25 @@
+{
+  "name": "lagalm_industrial_api",
+  "version": "1.0.0",
+  "description": "Lagalm Industrial API ERP",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "MartinGC",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.20.1",
+    "chalk": "^4.1.2",
+    "connect-multiparty": "^2.2.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jwt-simple": "^0.5.6",
+    "moment": "^2.29.4",
+    "mongoose": "^6.8.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
