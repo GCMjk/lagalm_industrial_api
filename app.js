@@ -7,6 +7,10 @@ const chalk = require('chalk');
 const port = process.env.PORT || 4201;
 
 const app = express();
+
+const test_routes = require('./routes/test');
+const employee_routes = require('./routes/employee');
+
 mongoose.set('strictQuery', false);
 mongoose
     .connect(process.env.MONGODB_URI, {
@@ -40,5 +44,8 @@ app.use((req,res,next)=>{
     res.header('Allow','GET, PUT, POST, DELETE, OPTIONS');
     next();
 });
+
+app.use('/api', test_routes);
+app.use('/api', employee_routes);
 
 module.exports = app;
