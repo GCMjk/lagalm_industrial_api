@@ -1,25 +1,49 @@
 const Employee = require('../models/Employee');
 const bcrypt = require('bcrypt-nodejs');
 
+const validateDate = require('validate-date');
+const validateEmail = require('email-validator');
+const validateCurp = require('curp');
+
 const jwt = require('../helpers/jwt');
 
 const register_employee_admin = async (req, res) => {
     let data = req.body;
+
+    let email = data.email;
+    let birthday = data.birthday;
+    let curp = data.curp;
+    let employeeNumber = data.job.employeeNumber;
     try {
 
         var employees = await Employee.find({ email: data.email });
 
-        bcrypt.hash('123456', null, null, async (err, hash) => {
+        bcrypt.hash(`${employeeNumber}`, null, null, async (err, hash) => {
             if(err) {
                 res.status(200).send({message: 'No se pudo generar la contraseña.', employee: undefined});
+            } else if ( !validateEmail.validate(email) ) {
+                res.status(200).send({ message: 'El formato del correo es inválido.', employee: undefined });
             } else {
-                if(employees.length >= 1) {
+
+                if( employees.length >= 1 ) {
+
                     res.status(200).send({ message: 'El correo electronico ya fue registrado. Intente con otro.', employee: undefined });
+                
+                } else if( !validateDate(birthday, responseType="boolean", dateFormat="dd/mm/yyyy") ) {
+                    
+                    res.status(200).send({ message: 'El formato de la fecha es inválido.', employee: undefined });
+                
+                } else if ( !validateCurp.validar(curp) ) {
+                    
+                    res.status(200).send({ message: 'El CURP es inválido.', employee: undefined });
+                
                 } else {
+                    
                     data.fullnames = data.name + ' ' +data.lastname;
                     data.password = hash;
                     let employee = await Employee.create(data);
                     res.status(201).send({ message: 'Empleado creado correctamente.', employee });
+                
                 }
             }
         });
