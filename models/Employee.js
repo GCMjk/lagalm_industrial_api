@@ -16,7 +16,7 @@ const EmployeeSchema = Schema({
     role: { type: String, required: true },
     avatar: { type: String, required: true },
     job: { type: Object, required: true },
-    lastSession: { type: String, required: false },
+    lastSession: { type: String, default: '', required: false },
     status: { type: Boolean, default: true, required: true }
 });
 
