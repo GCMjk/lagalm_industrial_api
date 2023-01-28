@@ -11,6 +11,7 @@
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.20.1",
+    "card-validator": "^8.1.1",
     "chalk": "^4.1.2",
     "connect-multiparty": "^2.2.0",
     "curp": "^1.2.2",
@@ -21,7 +22,9 @@
     "moment": "^2.29.4",
     "mongoose": "^6.8.4",
     "mongoose-pagination": "^1.0.0",
-    "validate-date": "^2.0.0"
+    "valid-phone-number": "^1.0.2",
+    "validate-date": "^2.0.0",
+    "validate-rfc": "^2.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

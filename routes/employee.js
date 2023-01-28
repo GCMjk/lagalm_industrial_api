@@ -4,9 +4,11 @@ const auth = require('../middlewares/authenticate');
 
 const app = express.Router();
 
-app.post('/employee', auth.auth, employeeController.register_employee_admin);
-app.put('/employee/status/:id', auth.auth, employeeController.editStatus_employee);
+app.post('/employee', auth.auth, employeeController.register_employee);
+app.put('/employee/:id', auth.auth, employeeController.edit_employee);
+app.get('/employee/:id', auth.auth, employeeController.get_employee);
 app.get('/employees/:page?', auth.auth, employeeController.get_employees);
-app.post('/login', employeeController.login_employee_admin);
+app.put('/employee/status/:id', auth.auth, employeeController.editStatus_employee);
+app.post('/login', employeeController.login_employee);
 
 module.exports = app;
