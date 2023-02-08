@@ -34,7 +34,7 @@ const ClientSchema = Schema({
         municipality: { type: String, required: false  },
         state: { type: String, required: false },
         country: { type: String, required: false },
-        zip: { type: String, required: false },
+        zip: { type: String, match: /^[0-9]+$/, required: false },
         streets: { 
             a: { type: String, required: false },
             b: { type: String, required: false },

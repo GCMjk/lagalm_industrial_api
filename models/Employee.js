@@ -18,7 +18,7 @@ const EmployeeSchema = Schema({
         municipality: { type: String, required: false  },
         state: { type: String, required: false },
         country: { type: String, required: false },
-        zip: { type: String, required: false },
+        zip: { type: String, match: /^[0-9]+$/, required: false },
         streets: { 
             a: { type: String, required: false },
             b: { type: String, required: false },
@@ -58,6 +58,6 @@ const EmployeeSchema = Schema({
     },
     lastSession: { type: String, default: "", required: false },
     status: { type: Boolean, default: true, required: true }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('employee', EmployeeSchema);

@@ -259,22 +259,22 @@ const get_clients = async (req, res) => {
 
         await Client.find().sort('createdAt').paginate(page, itemsPerPage, (err, clients, total) => {
             if(err) {
-                res.status(500).send({ message: 'Error en la petición.' });
+                res.status(500).send({ message: 'Error en la petición.', data: undefined });
             } else {
                 if(!clients) {
-                    res.status(404).send({ message: 'No hay clientes en la base de datos', clients: undefined })
+                    res.status(404).send({ message: 'No hay clientes en la base de datos', data: undefined })
                 } else {
                     res.status(200).send({
                         itemsPerPage,
                         total, 
                         pages: Math.ceil(total/itemsPerPage), 
-                        clients 
+                        data: clients 
                     });
                 }
             }
         });
     } else {
-        res.status(403).send({message: 'No hay un token válido para esta petición.', clients: undefined});
+        res.status(403).send({message: 'No hay un token válido para esta petición.', data: undefined});
     }
 }
 

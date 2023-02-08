@@ -11,6 +11,7 @@ const app = express();
 const test_routes = require('./routes/test');
 const employee_routes = require('./routes/employee');
 const client_routes = require('./routes/client');
+const product_routes = require('./routes/product');
 
 mongoose.set('strictQuery', false);
 mongoose
@@ -49,5 +50,6 @@ app.use((req,res,next)=>{
 app.use('/api', test_routes);
 app.use('/api', employee_routes);
 app.use('/api', client_routes);
+app.use('/api', product_routes);
 
 module.exports = app;

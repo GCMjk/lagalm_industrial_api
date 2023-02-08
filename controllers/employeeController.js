@@ -1,6 +1,6 @@
 const Employee = require('../models/Employee');
 const bcrypt = require('bcrypt-nodejs');
-const mongoosePaginate = require('mongoose-pagination')
+const mongoosePaginate = require('mongoose-pagination');
 
 const validateDate = require('validate-date');
 const validateEmail = require('email-validator');
@@ -27,7 +27,7 @@ const register_employee = async (req, res) => {
         try {
 
             var employees = await Employee.find({ email: data.email });
-
+            
             bcrypt.hash(`${employeeNumber}`, null, null, async (err, hash) => {
                 if(err) {
                     res.status(200).send({message: 'No se pudo generar la contraseña.', employee: undefined});
@@ -177,19 +177,19 @@ const get_employees = async (req, res) => {
                 res.status(500).send({ message: 'Error en la petición.' });
             } else {
                 if(!employees) {
-                    res.status(404).send({ message: 'No hay empleados en la base de datos', employees: undefined })
+                    res.status(404).send({ message: 'No hay empleados en la base de datos', data: undefined })
                 } else {
                     res.status(200).send({
                         itemsPerPage,
                         total, 
                         pages: Math.ceil(total/itemsPerPage), 
-                        employees 
+                        data: employees 
                     });
                 }
             }
         });
     } else {
-        res.status(403).send({message: 'No hay un token válido para esta petición.', employees: undefined});
+        res.status(403).send({message: 'No hay un token válido para esta petición.', data: undefined});
     }
 }
 
