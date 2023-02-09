@@ -35,7 +35,7 @@ const register_client = async (req, res) => {
                         if ( !isValidPhone(52, data.contact.phone) ) return res.status(200).send({ message: 'El número telefonico es inválido.', client: undefined });
                     }
                     
-                    if( data.type === 'CLIENT' && data.taxId && data.taxSystem && data.taxEmail && data.address.zip ) {
+                    if( data.type === 'CLIENT' && data.taxId && data.taxSystem && data.taxEmail && data.cfdi && data.paymentForm && data.paymentMethod && data.address.zip ) {
                         // Validar formato RFC
                         if( !validateRfc(data.taxId).isValid ) return res.status(200).send({ message: 'El RFC es inválido.', client: undefined });
                         const someTaxId = await Client.find({ taxId: data.taxId });
@@ -67,6 +67,9 @@ const register_client = async (req, res) => {
                             taxId: customer.tax_id,
                             taxSystem: customer.tax_system,
                             taxEmail: customer.email,
+                            cfdi: data.cfdi,
+                            paymentForm: data.paymentForm,
+                            paymentMethod: data.paymentMethod,
                             contact: data.contact,
                             address: {
                                 street: customer.address.street,
@@ -89,7 +92,7 @@ const register_client = async (req, res) => {
                         return res.status(201).send({ message: 'Cliente creado correctamente.', client });
                             
 
-                    } else if ( data.type === 'PROSPECT' && data.taxId === undefined && data.taxSystem === undefined && data.taxEmail === undefined ) {
+                    } else if ( data.type === 'PROSPECT' && data.taxId === undefined && data.taxSystem === undefined && data.taxEmail === undefined && data.cfdi === undefined && data.paymentForm === undefined && data.paymentMethod === undefined ) {
                         // Registro del objeto en DB
                         let prospect = await Client.create(data);
                         return res.status(201).send({ message: 'Prospecto creado correctamente.', client: prospect });
@@ -148,23 +151,26 @@ const edit_client = async (req, res) => {
                         
                         if(getClientById.facturapiId) {
                             
-                            var customer = await facturapi.customers.update(getClientById.facturapiId,{
-                                legal_name: data.legalName,
-                                tax_id: data.taxId,
-                                tax_system: data.taxSystem,
-                                email: data.taxEmail,
-                                address: {
-                                    street: data.address.street,
-                                    exterior: data.address.exterior,
-                                    interior: data.address.interior,
-                                    neighborhood: data.address.neighborhood,
-                                    city: data.address.city,
-                                    municipality: data.address.municipality,
-                                    state: data.address.state,
-                                    country: data.address.country,
-                                    zip: data.address.zip
+                            var customer = await facturapi.customers.update(
+                                getClientById.facturapiId,
+                                {
+                                    legal_name: data.legalName,
+                                    tax_id: data.taxId,
+                                    tax_system: data.taxSystem,
+                                    email: data.taxEmail,
+                                    address: {
+                                        street: data.address.street,
+                                        exterior: data.address.exterior,
+                                        interior: data.address.interior,
+                                        neighborhood: data.address.neighborhood,
+                                        city: data.address.city,
+                                        municipality: data.address.municipality,
+                                        state: data.address.state,
+                                        country: data.address.country,
+                                        zip: data.address.zip
+                                    }
                                 }
-                            });
+                            );
                         } else {
                             var customer = await facturapi.customers.create({
                                 legal_name: data.legalName,

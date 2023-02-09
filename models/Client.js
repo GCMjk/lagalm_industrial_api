@@ -11,6 +11,9 @@ const ClientSchema = Schema({
     taxId: { type: String, uppercase: true, required: false },
     taxSystem: { type: String, enum: ["", "601", "603", "605", "606", "607", "608", "610", "611", "612", "614", "615", "616", "620", "621", "622", "623", "624", "625", "626"], required: false },
     taxEmail: { type: String, required: false },
+    cdfi: { type: String, required: false },
+    paymentForm: { type: String, required: false },
+    paymentMethod: { type: String, enum: ["PUE", "PPD"], required: false },
     contact: {
         email: { type: String, required: true },
         phone: { type: String, required: false },
