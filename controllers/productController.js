@@ -64,7 +64,7 @@ const register_product = async (req, res) => {
             }
 
         } catch (e) {
-            res.status(400).send({message: 'Verifique los datos registrados.', product: undefined});
+            res.status(200).send({message: 'Verifique los datos registrados.', product: undefined});
         }
     } else {
         res.status(403).send({message: 'No hay un token válido para esta petición.', product: undefined});
@@ -148,7 +148,7 @@ const edit_product = async (req, res) => {
             }
 
         } catch (e) {
-            res.status(400).send({message: 'Verifique los datos registrados.', product: undefined});
+            res.status(200).send({message: 'Verifique los datos registrados.', product: undefined});
         }
     } else {
         res.status(403).send({message: 'No hay un token válido para esta petición.', product: undefined});

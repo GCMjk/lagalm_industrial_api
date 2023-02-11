@@ -12,6 +12,7 @@ const test_routes = require('./routes/test');
 const employee_routes = require('./routes/employee');
 const client_routes = require('./routes/client');
 const product_routes = require('./routes/product');
+const order_routes = require('./routes/order');
 
 mongoose.set('strictQuery', false);
 mongoose
@@ -51,5 +52,6 @@ app.use('/api', test_routes);
 app.use('/api', employee_routes);
 app.use('/api', client_routes);
 app.use('/api', product_routes);
+app.use('/api', order_routes);
 
 module.exports = app;
