@@ -1,21 +1,23 @@
-const { Schema } = require('mongoose');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const contactSchema = Schema({
-    email: { type: String, required: true },
-    phone: { type: String, required: false },
-    web: { type: String, required: false },
-    contactPersonalized: { 
-        type: [
-            {
-                title: { type: String, enum: [ "LIC", "ING", "SR", "SRA", "UNDEFINED" ], required: true },
-                name: { type: String, required: true },
-                workPosition: { type: String, enum: [ "VENTAS", "COMPRAS", "GERENTE", "MERCADOTECNIA", "DESARROLLADOR", "RECURSOS HUMANOS", "SISTEMAS", "OTRO" ], required: true },
-                email: { type: String, required: true },
-                phone: { type: String, required: false },
-            }
-        ],
-        required: false
-    },
+const ContactSchema = Schema({
+    email: String,
+    phone: Number,
+    web: String,
+    contactPersonalized: {
+        title: { 
+            type: String, 
+            enum: [ "LIC", "ING", "SR", "SRA", "OTHER" ]
+        },
+        name: String,
+        workPosition: { 
+            type: String,
+            enum: [ "SALES", "PURCHASING", "MANAGER", "MARKETING", "DEVELOPER", "HUMAN RESOURCES", "SYSTEMS", "OTHER" ]
+        },
+        email: String,
+        phone: Number
+    }
 });
 
-module.exports = contactSchema;
+module.exports = ContactSchema;

@@ -1,19 +1,23 @@
-const { Schema } = require('mongoose');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const addressSchema = Schema({
-    street: { type: String, required: true },
-    exterior: { type: String, required: true },
-    interior: { type: String, required: false },
-    neighborhood: { type: String, required: true },
-    city: { type: String, required: true },
-    municipality: { type: String, required: true  },
-    state: { type: String, required: true },
-    country: { type: String, required: true },
-    zip: { type: String, required: true },
+const AddressSchema = Schema({ 
+    street: String,
+    exterior: String,
+    interior: String,
+    neighborhood: String,
+    city: String,
+    municipality: String ,
+    state: String,
+    country: String,
+    zip: { 
+        type: String,
+        required: true
+    },
     streets: { 
-        a: { type: String, required: false },
-        b: { type: String, required: false },
+        a: String,
+        b: String,
     }
 });
 
-module.exports = addressSchema;
+module.exports = AddressSchema;

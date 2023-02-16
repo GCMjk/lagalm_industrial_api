@@ -1,5 +1,5 @@
 const Order = require('../models/Order');
-const Client = require('../models/Client');
+const Client = require('../models/sales/Client');
 const Product = require('../models/Product');
 const mongoosePaginate = require('mongoose-pagination');
 

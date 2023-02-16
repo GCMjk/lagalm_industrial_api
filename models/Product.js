@@ -18,7 +18,7 @@ const ProductSchema = Schema({
     assigned: { type: Boolean, required: true },
     client: {
         type: Schema.Types.ObjectId,
-        ref: 'clients'
+        ref: 'client'
     },
     status: { type: Boolean, default: true, required: true }
 }, { timestamps: true });

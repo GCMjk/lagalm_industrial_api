@@ -1,5 +1,5 @@
 const Product = require('../models/Product');
-const Client = require('../models/Client');
+const Client = require('../models/sales/Client');
 const mongoosePaginate = require('mongoose-pagination');
 
 const Facturapi = require('facturapi');
@@ -160,7 +160,7 @@ const get_product = async (req, res) => {
         let id = req.params.id;
         
         try {
-            let product = await Product.findById({ _id: id });
+            let product = await Product.findById({ _id: id }).populate('client');
             res.status(200).send({ product }); 
         } catch (error) {
             res.status(200).send({ message: 'El id del producto no es válido.', product: undefined }); 
@@ -181,7 +181,7 @@ const get_products = async (req, res) => {
             var page = 1;
         }
 
-        await Product.find().sort('createdAt').paginate(page, itemsPerPage, (err, products, total) => {
+        await Product.find().populate('client').sort('createdAt').paginate(page, itemsPerPage, (err, products, total) => {
             if(err) {
                 res.status(500).send({ message: 'Error en la petición.', data: undefined });
             } else {
