@@ -1,5 +1,12 @@
 const express = require('express');
-const { register_client, edit_client, get_client, get_clients, get_clientsByFilter, editStatusClient } = require('../../controllers/sales/clientController');
+const { 
+    register_client, 
+    edit_client, 
+    get_client, 
+    get_clients, 
+    get_clientsByFilter, 
+    editStatusClient 
+} = require('../../controllers/sales/clientController');
 const { auth } = require('../../middlewares/authenticate');
 const { validateClient } = require('../../middlewares/validator/sales/client');
 

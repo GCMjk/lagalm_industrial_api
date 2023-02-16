@@ -11,7 +11,7 @@ const app = express();
 const test_routes = require('./routes/test');
 const employee_routes = require('./routes/employee');
 const client_routes = require('./routes/sales/client');
-const product_routes = require('./routes/product');
+const product_routes = require('./routes/sales/product');
 const order_routes = require('./routes/order');
 
 mongoose.set('strictQuery', false);

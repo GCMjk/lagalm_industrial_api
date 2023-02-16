@@ -1,6 +1,6 @@
-const Client = require('../../models/sales/Client');
 const bcrypt = require("bcryptjs");
 const mongoosePaginate = require('mongoose-pagination');
+const Client = require('../../models/sales/Client');
 
 const Facturapi = require('facturapi');
 const facturapi = new Facturapi(process.env.FACTURAPI_KEY);
@@ -63,7 +63,7 @@ const register_client = async (req, res) => {
                     },
                     type: data.type
                 });
-                return res.status(201).send({ message: 'Cliente creado correctamente.', data: client });
+                return res.status(201).send({ message: 'Cliente creado correctamente', data: client });
 
             } else if ( data.type === 'PROSPECT' && data.tax === undefined ) {
                 const prospect = await Client.create(data);
@@ -77,7 +77,7 @@ const register_client = async (req, res) => {
         }
 
     } else {
-        res.status(401).send({ message: 'No hay un token válido para esta petición.' });
+        res.status(401).send({ message: 'No hay un token válido para esta petición' });
     }
 }
 
@@ -172,7 +172,7 @@ const edit_client = async (req, res) => {
                     },
                     { runValidators: true }
                 );
-                return res.status(201).send({ message: 'Cliente actualizado correctamente.', data: client });
+                return res.status(201).send({ message: 'Cliente actualizado correctamente', data: client });
                 
             } else if (data.type === 'PROSPECT' && data.tax === undefined) {
                 const prospect = await Client.findByIdAndUpdate(
@@ -189,7 +189,7 @@ const edit_client = async (req, res) => {
         }
         
     } else {
-        res.status(401).send({ message: 'No hay un token válido para esta petición.' });
+        res.status(401).send({ message: 'No hay un token válido para esta petición' });
     }
 }
 
@@ -205,7 +205,7 @@ const get_client = async (req, res) => {
         }
 
     } else {
-        res.status(401).send({ message: 'No hay un token válido para esta petición.' });
+        res.status(401).send({ message: 'No hay un token válido para esta petición' });
     }
 }
 
@@ -222,7 +222,7 @@ const get_clients = async (req, res) => {
         try {
             await Client.find().sort('createdAt').paginate(page, itemsPerPage, (err, clients, total) => {
                 if(err) {
-                    res.status(500).send({ message: 'Error en la petición.' });
+                    res.status(500).send({ message: 'Error en la petición' });
                 } else {
                     if(!clients) {
                         res.status(404).send({ message: 'No hay clientes en la base de datos' })
@@ -242,7 +242,7 @@ const get_clients = async (req, res) => {
         }
 
     } else {
-        res.status(401).send({ message: 'No hay un token válido para esta petición.' });
+        res.status(401).send({ message: 'No hay un token válido para esta petición' });
     }
 }
 
@@ -287,7 +287,7 @@ const get_clientsByFilter = async (req, res) => {
         }
         
     } else {
-        res.status(403).send({message: 'No hay un token válido para esta petición.', clients: undefined});
+        res.status(403).send({message: 'No hay un token válido para esta petición' });
     }
 }
 
@@ -307,14 +307,14 @@ const editStatusClient = async (req, res) => {
             const client = await Client.findByIdAndUpdate({ _id: id }, {
                 status: newState
             });
-            res.status(201).send({ message: `El cliente ${data.legalName}, cambio de estado`, data: client });
+            res.status(201).send({ message: `El cliente ${client.legalName}, cambio de estado`, data: client });
 
         } catch (e) {
             res.status(500).send({ message: 'Error con la petición' });
         }
 
     } else {
-        res.status(401).send({ message: 'No hay un token válido para esta petición.' });
+        res.status(401).send({ message: 'No hay un token válido para esta petición' });
     }
 }
 

@@ -1,6 +1,6 @@
 const Order = require('../models/Order');
 const Client = require('../models/sales/Client');
-const Product = require('../models/Product');
+const Product = require('../models/sales/Product');
 const mongoosePaginate = require('mongoose-pagination');
 
 const Facturapi = require('facturapi');
