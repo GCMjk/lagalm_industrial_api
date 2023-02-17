@@ -28,8 +28,8 @@ const validateOrder = [
             return true;
         }),
     check('state')
-        .optional()
-        .isIn(['RECEIVED', 'PRODUCING', 'PRODUCED', 'SENT', 'DELIVERED']).withMessage('Seleccione una opción valida para el estado de la orden'),
+        .isEmpty().withMessage('El estado no puede ser modificado'),
+        //.isIn(['RECEIVED', 'PRODUCING', 'PRODUCED', 'SENT', 'DELIVERED']).withMessage('Seleccione una opción valida para el estado de la orden'),
     check('status')
         .optional()
         .isBoolean().withMessage('El estado del producto debe ser un booleano'),

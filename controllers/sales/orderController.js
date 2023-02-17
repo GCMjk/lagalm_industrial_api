@@ -11,58 +11,10 @@ const register_order = async (req, res) => {
         let data = req.body;
 
         try {
-            var {
-                legalName,
-                tax: {
-                    facturapiID: customerID,
-                    daysOfExpiration,
-                    use,
-                    paymentForm,
-                    paymentMethod,
-                    currency
-                }
-            } = await Client.findById(data.customer);
-            var items = await Promise.all(
-                data.items.map(async ({quantity, product: id}) => {
-                    const { facturapiID: productID } = await Product.findById({ _id: id });
-                    return {
-                        quantity,
-                        product: productID
-                    }
-                })
-            );
-            if(currency === 'USD') {
-                var exchange = 19.02;
-                const usdToMxn = await Promise.all(
-                    data.items.map(async ({quantity, product: id}) => {
-                        const { price } = await Product.findById({ _id: id });
-                        const amount = price * quantity;
-                        const ivaOfAmount = amount * .16;
-                        const withIva = amount + ivaOfAmount;
-                        return withIva * exchange;
-                    })
-                );
-                var mxn = new Intl.NumberFormat('es-MX').format(usdToMxn.map(c => parseFloat(c)).reduce((a, b) => a + b, 0).toFixed(2));
-            } 
-            const invoice = await facturapi.invoices.create({
-                customer: customerID,
-                items,
-                use,
-                payment_form: paymentForm,
-                payment_method: paymentMethod,
-                currency,
-                exchange: currency === 'USD' 
-                    ? exchange 
-                    : undefined,
-                pdf_custom_section: currency === 'USD'
-                    ? `<div> <span><b>Equivalente a: </b></span><span>$ ${mxn} MXN</span> </div>`
-                    : undefined,
-                conditions: `Días de vencimiento: ${daysOfExpiration}`
-            });
-            const order = await Order.create({
-                invoiceID: invoice.id,
-                ...data
-            });
+
+            var { legalName } = await Client.findById(data.customer);
+                
+            const order = await Order.create(data);
             return res.status(201).send({ message: `Orden del cliente ${legalName}, creada correctamente.`, data: order });
 
         } catch(e) {
@@ -75,7 +27,33 @@ const register_order = async (req, res) => {
 }
 
 const edit_order = async (req, res) => {
-    // TO DO: 
+    if(req.user){
+        let id = req.params.id;
+        let data = req.body;
+        let getOrderById = await Order.findById(id).populate('customer');
+
+        try {
+
+            if(!getOrderById.status) {
+                return res.status(400).send({ message: 'La orden no puede ser modificada ya que ah sido cancelada' });
+            } else {
+
+                if(getOrderById.state === 'RECEIVED') {
+                    const order = await Order.findByIdAndUpdate(id, data);
+                    return res.status(201).send({ message: `Orden del cliente ${getOrderById.customer.legalName}, actualizada correctamente.`, data: order });    
+                } else {
+                    return res.status(400).send({ message: 'La orden no puede ser modificada ya que esta siendo producida o ah sido enviada' });
+                }
+
+            }
+
+        } catch(e) {
+            res.status(500).send({ message: 'Error con la petición' });
+        }
+
+    } else {
+        res.status(401).send({ message: 'No hay un token válido para esta petición' });
+    }
 }
 
 const get_order = async (req, res) => {
@@ -173,6 +151,93 @@ const get_ordersByClient = async (req, res) => {
     }
 }
 
+const changeStateOrder = async (req, res) => {
+    if (req.user) {
+        let id = req.params.id;
+        var {
+            customer: {
+                legalName,
+                tax: {
+                    facturapiID: customerID,
+                    daysOfExpiration,
+                    use,
+                    paymentForm,
+                    paymentMethod,
+                    currency
+                }
+            },
+            items: orderItems,
+            state
+        } = await Order.findById(id).populate('customer');
+
+        try {
+            var newState;
+            if(state === 'RECEIVED') {
+                newState = 'PRODUCING';
+            } else if (state === 'PRODUCING') {
+                newState = 'PRODUCED';
+            } else if (state === 'PRODUCED') {
+                newState = 'SENT';
+                //Invoice
+                var items = await Promise.all(
+                    orderItems.map(async ({quantity, product: id}) => {
+                        const { facturapiID: productID } = await Product.findById({ _id: id });
+                        return {
+                            quantity,
+                            product: productID
+                        }
+                    })
+                );
+                if(currency === 'USD') {
+                    var exchange = 19.02;
+                    const usdToMxn = await Promise.all(
+                        orderItems.map(async ({quantity, product: id}) => {
+                            const { price } = await Product.findById({ _id: id });
+                            const amount = price * quantity;
+                            const ivaOfAmount = amount * .16;
+                            const withIva = amount + ivaOfAmount;
+                            return withIva * exchange;
+                        })
+                    );
+                    var mxn = new Intl.NumberFormat('es-MX').format(usdToMxn.map(c => parseFloat(c)).reduce((a, b) => a + b, 0).toFixed(2));
+                }   
+                var invoice = await facturapi.invoices.create({
+                    customer: customerID,
+                    items,
+                    use,
+                    payment_form: paymentForm,
+                    payment_method: paymentMethod,
+                    currency,
+                    exchange: currency === 'USD' 
+                        ? exchange 
+                        : undefined,
+                    pdf_custom_section: currency === 'USD'
+                        ? `<div> <span><b>Equivalente a: </b></span><span>$ ${mxn} MXN</span> </div>`
+                        : undefined,
+                    conditions: `Días de vencimiento: ${daysOfExpiration}`
+                });
+            } else if (state === 'SENT') {
+                newState = 'DELIVERED';
+            } else {
+                if(state === 'DELIVERED') return res.status(401).send({ message: 'La orden ah sido entregada, no puede cambiar su estado' });
+                res.status(401).send({ message: 'Error en el cambio de estado de una orden' });
+            }
+
+            const order = await Order.findByIdAndUpdate( id, {
+                invoiceID: invoice ? invoice.id : undefined,
+                state: newState
+            });
+            res.status(200).send({ message: `La orden del cliente ${legalName} cambio de estado` });
+
+        } catch(e) {
+            res.status(500).send({ message: 'Error con la petición' });
+        }
+
+    } else {
+        res.status(401).send({ message: 'No hay un token válido para esta petición' });
+    }
+}
+
 const editStatusOrder = async (req, res) => {
     if (req.user) {
         let id = req.params.id;
@@ -206,5 +271,6 @@ module.exports = {
     get_order,
     get_orders,
     get_ordersByClient,
+    changeStateOrder,
     editStatusOrder
 }
