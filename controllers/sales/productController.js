@@ -164,7 +164,7 @@ const get_products = async (req, res) => {
                 if(err) {
                     res.status(500).send({ message: 'Error en la petición' });
                 } else {
-                    if(!products) {
+                    if(products.length === 0) {
                         res.status(404).send({ message: 'No hay productos en la base de datos' })
                     } else {
                         res.status(200).send({
@@ -202,7 +202,7 @@ const get_productsByClient = async (req, res) => {
                 if(err) {
                     res.status(500).send({ message: 'Error en la petición.' });
                 } else {
-                    if(!products) {
+                    if(products.length === 0) {
                         res.status(404).send({ message: 'No hay productos del cliente en la base de datos', products: undefined })
                     } else {
                         res.status(200).send({

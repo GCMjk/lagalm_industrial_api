@@ -224,7 +224,7 @@ const get_clients = async (req, res) => {
                 if(err) {
                     res.status(500).send({ message: 'Error en la petición' });
                 } else {
-                    if(!clients) {
+                    if(clients.length === 0) {
                         res.status(404).send({ message: 'No hay clientes en la base de datos' })
                     } else {
                         res.status(200).send({
@@ -269,7 +269,7 @@ const get_clientsByFilter = async (req, res) => {
                     if(err) {
                         res.status(500).send({ message: 'Error en la petición.' });
                     } else {
-                        if(!clients) {
+                        if(clients.length === 0) {
                             res.status(404).send({ message: 'No hay clientes en la base de datos' })
                         } else {
                             res.status(200).send({

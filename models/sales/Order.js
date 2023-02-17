@@ -2,23 +2,35 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const OrderSchema = Schema({
-    facturapiId: { type: String, required: false },
+    invoiceID: String,
     customer: { 
         type: Schema.Types.ObjectId,
-        ref: 'clients',
+        ref: 'client',
         required: true
     },
     items: [
         {
-            quantity: { type: Number, required: true },
+            quantity: { 
+                type: Number,
+                required: true
+            },
             product: { 
                 type: Schema.Types.ObjectId,
-                ref: 'clients',
+                ref: 'product',
                 required: true
             }
         }
     ],
-    invoiceId: { type: String, required: false }
+    state: { 
+        type: String,
+        enum: ["RECEIVED", "PRODUCING", "PRODUCED", "SENT", "DELIVERED"],
+        default: "RECEIVED",
+        required: true
+    },
+    status: {
+        type: Boolean,
+        default: true
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('order', OrderSchema);
